@@ -5,18 +5,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("local")
-public class LocalAuthenticationFilter extends AbstractAuthenticationFilter {
+@Profile({"dev","prod"})
+public class AwsAuthenticationFilter extends AbstractAuthenticationFilter {
 
     private final JwtService jwtService;
 
-    public LocalAuthenticationFilter(JwtService jwtService) {
+    public AwsAuthenticationFilter(JwtService jwtService) {
+        //TO-DO replace with Cognito Service
         this.jwtService = jwtService;
     }
 
     @Override
     protected CurrentUser parseToken(String token) {
 
+        // TO-DO Later replace with cognitoJwtService.parse(token);
         return jwtService.parse(token);
 
     }
@@ -24,7 +26,7 @@ public class LocalAuthenticationFilter extends AbstractAuthenticationFilter {
     @Override
     protected void setCurrentUser(CurrentUser user) {
 
-        LocalCurrentUserProvider.set(user);
+        AwsCurrentUserProvider.set(user);
 
     }
 }

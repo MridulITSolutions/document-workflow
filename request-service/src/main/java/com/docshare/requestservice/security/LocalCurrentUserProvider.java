@@ -12,6 +12,7 @@ public class LocalCurrentUserProvider implements CurrentUserProvider {
     private static final ThreadLocal<CurrentUser> CURRENT_USER = new ThreadLocal<>();
 
     public static void set(CurrentUser user){
+
         CURRENT_USER.set(user);
     }
 

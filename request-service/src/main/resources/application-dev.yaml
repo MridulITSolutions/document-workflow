@@ -13,3 +13,6 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+  aws:
+    stepfunctions:
+      stateMachineArn: "arn:aws:states:ap-south-1:657954629050:stateMachine:DocShareCreateRequestWorkflowStateMachine"

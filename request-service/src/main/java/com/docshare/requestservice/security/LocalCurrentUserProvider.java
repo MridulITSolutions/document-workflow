@@ -9,16 +9,25 @@ import org.springframework.stereotype.Component;
 @Profile("local")
 public class LocalCurrentUserProvider implements CurrentUserProvider {
 
-    private static final ThreadLocal<CurrentUser> CURRENT_USER = new ThreadLocal<>();
+    private static final ThreadLocal<CurrentUser> HOLDER = new ThreadLocal<>();
 
-    public static void set(CurrentUser user){
 
-        CURRENT_USER.set(user);
+    public static void set(CurrentUser user) {
+
+        HOLDER.set(user);
+
     }
 
     @Override
     public CurrentUser getCurrentUser() {
-        return CURRENT_USER.get();
+
+        return HOLDER.get();
+
+    }
+    public static void clear() {
+
+        HOLDER.remove();
+
     }
 
 }

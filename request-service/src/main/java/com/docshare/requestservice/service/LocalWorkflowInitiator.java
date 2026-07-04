@@ -12,7 +12,7 @@ public class LocalWorkflowInitiator implements WorkflowInitiator {
 
     private final RestTemplate restTemplate;
 
-    public LocalWorkflowInitiator(RestTemplate restTemplate) {
+        public LocalWorkflowInitiator(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

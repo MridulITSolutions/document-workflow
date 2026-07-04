@@ -18,21 +18,30 @@ public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter 
             throws ServletException, IOException {
 
         String token = request.getHeader("Authorization");
+       try {
+           if (token != null && token.startsWith("Bearer ")) {
 
-        if (token != null && token.startsWith("Bearer ")) {
+               CurrentUser user =
+                       parseToken(token.substring(7));
 
-            CurrentUser user =
-                    parseToken(token.substring(7));
+               if (user != null) {
+                   setCurrentUser(user);
+               }
+           }
 
-            if (user != null) {
-                setCurrentUser(user);
-            }
-        }
-
-        chain.doFilter(request, response);
+           chain.doFilter(request, response);
+       }finally {
+          // ThreadLocal state gets wiped cleanly after the response leaves
+           clearContext();
+       }
     }
 
     protected abstract CurrentUser parseToken(String token);
 
     protected abstract void setCurrentUser(CurrentUser user);
+    // Add this new hook to wipe the contextual memory state cleanly
+    protected void clearContext() {
+        AwsCurrentUserProvider.clear();
+        LocalCurrentUserProvider.clear();
+    }
 }

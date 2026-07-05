@@ -2,6 +2,7 @@ package com.docshare.requestservice.controller;
 
 import com.docshare.requestservice.dto.CreateRequestRequest;
 import com.docshare.requestservice.dto.CreateRequestResponse;
+import com.docshare.requestservice.dto.RequestDetailResponse;
 import com.docshare.requestservice.dto.RequestSummaryResponse;
 import com.docshare.requestservice.service.RequestService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -32,6 +33,11 @@ public class RequestController {
 
         return requestService.getRequests();
 
+    }
+
+    @GetMapping("/{requestId}")
+    public RequestDetailResponse getRequestById(@PathVariable Long requestId) {
+        return requestService.getRequestById(requestId);
     }
 
 }

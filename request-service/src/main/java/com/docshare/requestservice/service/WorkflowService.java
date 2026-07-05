@@ -7,6 +7,7 @@ import com.docshare.common.repository.RequestProgressRepository;
 import com.docshare.common.repository.RequestRepository;
 import com.docshare.common.repository.UserRepository;
 import com.docshare.requestservice.dto.WorkflowRequest;
+import com.docshare.requestservice.dto.WorkflowResponse;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class WorkflowService {
         this.userRepository = userRepository;
     }
 
-    public void startWorkflow(WorkflowRequest request) {
+    public WorkflowResponse startWorkflow(WorkflowRequest request) {
 
         RequestMaster requestMaster =
                 requestRepository.findById(request.getRequestId()).orElseThrow();
@@ -80,10 +81,24 @@ public class WorkflowService {
         requestMaster.setModifiedDate(LocalDateTime.now());
 
         requestRepository.save(requestMaster);
-        //Step 4 Send Notification Email to approver
+
+        //Step 4:Fetch the Approver's record to get their email address
+        UserMaster approver =
+                userRepository.findById(approverId).orElseThrow(() -> new RuntimeException("Approver not found"));
+        System.out.println("Workflow Completed");
+
+        //Step 5 Send Notification Email to approver
         /**No Email in Local. In AWS Prod. Step Function will invoke Lambda to Send email*/
 
-        System.out.println("Workflow Completed");
+        // Construct and return the payload that Step Functions will pass to the next step
+        WorkflowResponse response = new WorkflowResponse();
+        response.setApproverEmail(approver.getEmail()); // Dynamic Email from DB
+        response.setRequestName(requestMaster.getRequestName()); // Dynamic Request Name (e.g., "Q1 Financial Audit Export")
+        response.setStatus("PENDING");
+        // TO-DO read the actual app url from yaml file
+        response.setAppUrl("https://docshare.yourcompany.com/dashboard/review?id=" + request.getRequestId());
+
+       return response;
 
     }
     private List<String> buildWorkflow(String confidentiality) {

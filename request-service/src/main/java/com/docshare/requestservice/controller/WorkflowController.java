@@ -1,9 +1,11 @@
 package com.docshare.requestservice.controller;
 
 import com.docshare.requestservice.dto.WorkflowRequest;
+import com.docshare.requestservice.dto.WorkflowResponse;
 import com.docshare.requestservice.service.WorkflowService;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Hidden
@@ -18,11 +20,11 @@ public class WorkflowController {
     }
 
     @PostMapping("/workflow")
-    public void initiateWorkflow(
+    public ResponseEntity<WorkflowResponse> initiateWorkflow(
             @RequestBody WorkflowRequest request) {
 
-        workflowService.startWorkflow(request);
-
+        WorkflowResponse response = workflowService.startWorkflow(request);
+        return ResponseEntity.ok(response);
     }
 
 }
